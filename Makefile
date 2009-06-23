@@ -8,4 +8,4 @@ test-rhino:
 	@@${JAR} ${TEST}
 
 run-rhino:
-	echo "load('src/env.js');window.location='test/index.html';" | ${JAR}
+	echo "load('src/env.js');window.location='file://./test/index.html';" | ${JAR}

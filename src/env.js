@@ -23,10 +23,13 @@ var window = this;
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", url);
 		xhr.onreadystatechange = function(){
-			curLocation = new java.net.URL( curLocation, url );
-			window.document = xhr.responseXML;
+			if(xhr.readyState != 4)
+				return;
 
-			var event = document.createEvent();
+			curLocation = new java.net.URL( curLocation, url );
+			window.document = new DOMDocument(xhr.responseXML);
+
+			var event = window.document.createEvent();
 			event.initEvent("load");
 			window.dispatchEvent( event );
 		};
@@ -133,10 +136,11 @@ var window = this;
 	// DOM Document
 	
 	window.DOMDocument = function(file){
+		var dbf = Packages.javax.xml.parsers.DocumentBuilderFactory.newInstance();
+		dbf.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+
 		this._file = file;
-		this._dom = Packages.javax.xml.parsers.
-			DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder().parse(file);
+		this._dom = dbf.newDocumentBuilder().parse(file);
 		
 		if ( !obj_nodes.containsKey( this._dom ) )
 			obj_nodes.put( this._dom, this );
